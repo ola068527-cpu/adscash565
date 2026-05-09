@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdsCash - Watch Ads & Earn Money</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #F5C842;
+  --gold-dark: #D4A800;
+  --green: #00E676;
+  --green-dark: #00C853;
+  --bg: #0A0A0F;
+  --bg2: #111118;
+  --bg3: #18181F;
+  --bg4: #1E1E28;
+  --border: rgba(245,200,66,0.15);
+  --text: #F0EDE8;
+  --muted: #888899;
+  --red: #FF4757;
+  --blue: #448AFF;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:10px;}
+
+/* ─── PAGES ─── */
+.page{display:none;min-height:100vh;animation:fadeIn .3s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── AUTH PAGES ─── */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at 50% 0%,rgba(245,200,66,0.08) 0%,transparent 60%);}
+.auth-box{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px;width:100%;max-width:420px;position:relative;overflow:hidden;}
+.auth-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--green));}
+.auth-logo{text-align:center;margin-bottom:30px;}
+.auth-logo .logo-icon{width:60px;height:60px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;}
+.auth-logo h1{font-size:26px;color:var(--gold);}
+.auth-logo p{color:var(--muted);font-size:13px;}
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:500;}
+.form-group input,.form-group select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:.2s;}
+.form-group input:focus,.form-group select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,200,66,0.1);}
+.form-group select option{background:var(--bg3);}
+.btn{width:100%;padding:13px;border-radius:10px;border:none;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:.2s;letter-spacing:.5px;}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0F;}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 8px 25px rgba(245,200,66,0.35);}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text);}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.auth-switch{text-align:center;margin-top:20px;font-size:13px;color:var(--muted);}
+.auth-switch a{color:var(--gold);text-decoration:none;font-weight:600;cursor:pointer;}
+.error-msg{background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--red);margin-bottom:15px;display:none;}
+.success-msg{background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--green);margin-bottom:15px;display:none;}
+
+/* ─── MAIN APP ─── */
+.app-layout{display:flex;min-height:100vh;}
+.sidebar{width:240px;background:var(--bg2);border-right:1px solid var(--border);padding:20px 0;position:fixed;top:0;left:0;height:100vh;z-index:100;transition:.3s;display:flex;flex-direction:column;}
+.sidebar-logo{padding:0 20px 20px;border-bottom:1px solid var(--border);}
+.sidebar-logo h2{font-size:22px;color:var(--gold);}
+.sidebar-logo span{font-size:11px;color:var(--muted);}
+.sidebar-nav{flex:1;padding:20px 10px;overflow-y:auto;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:10px;cursor:pointer;color:var(--muted);font-size:14px;font-weight:500;transition:.2s;margin-bottom:4px;}
+.nav-item:hover{background:var(--bg3);color:var(--text);}
+.nav-item.active{background:rgba(245,200,66,0.1);color:var(--gold);border:1px solid rgba(245,200,66,0.2);}
+.nav-item .icon{font-size:18px;width:22px;text-align:center;}
+.sidebar-user{padding:14px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.user-avatar{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0A0A0F;flex-shrink:0;}
+.user-info{flex:1;overflow:hidden;}
+.user-info .uname{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-info .uid{font-size:11px;color:var(--muted);}
+
+.main-content{margin-left:240px;flex:1;min-height:100vh;padding:24px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+.topbar h2{font-size:22px;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.balance-pill{background:var(--bg3);border:1px solid var(--border);border-radius:50px;padding:8px 16px;font-size:13px;font-weight:600;color:var(--gold);}
+
+/* ─── CARDS ─── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:22px;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;overflow:hidden;}
+.stat-card::after{content:'';position:absolute;bottom:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:var(--accent-color,rgba(245,200,66,0.05));pointer-events:none;}
+.stat-label{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;}
+.stat-value{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text);}
+.stat-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+.stat-icon{font-size:28px;margin-bottom:10px;}
+
+/* ─── ADS SECTION ─── */
+.ads-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.ad-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:.2s;}
+.ad-card:hover{border-color:rgba(245,200,66,0.3);transform:translateY(-2px);}
+.ad-thumb{width:100%;height:140px;background:linear-gradient(135deg,var(--bg3),var(--bg4));display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;}
+.ad-earn-badge{position:absolute;top:10px;right:10px;background:var(--gold);color:#0A0A0F;border-radius:50px;padding:3px 10px;font-size:12px;font-weight:700;font-family:'Syne',sans-serif;}
+.ad-body{padding:16px;}
+.ad-title{font-size:14px;font-weight:600;margin-bottom:6px;}
+.ad-meta{font-size:12px;color:var(--muted);margin-bottom:14px;}
+.btn-watch{width:100%;padding:10px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0F;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:.2s;}
+.btn-watch:hover{transform:translateY(-1px);box-shadow:0 5px 15px rgba(245,200,66,0.3);}
+.btn-watch:disabled{background:var(--bg3);color:var(--muted);cursor:not-allowed;transform:none;box-shadow:none;}
+.watched-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(0,230,118,0.1);color:var(--green);border-radius:6px;padding:8px 14px;font-size:13px;font-weight:600;width:100%;justify-content:center;}
+
+/* ─── TIMER MODAL ─── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:.3s;}
+.modal-overlay.active{opacity:1;pointer-events:all;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:36px;width:100%;max-width:420px;text-align:center;position:relative;}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--green));border-radius:20px 20px 0 0;}
+.timer-circle{width:120px;height:120px;border-radius:50%;border:4px solid var(--border);border-top-color:var(--gold);display:flex;align-items:center;justify-content:center;margin:20px auto;font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--gold);animation:spin 1s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.timer-static{animation:none!important;border-color:var(--gold);}
+
+/* ─── WITHDRAWAL ─── */
+.withdraw-form{max-width:500px;}
+.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+.method-btn{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;transition:.2s;font-size:12px;font-weight:600;}
+.method-btn:hover,.method-btn.active{border-color:var(--gold);background:rgba(245,200,66,0.08);color:var(--gold);}
+.method-btn .micon{font-size:22px;display:block;margin-bottom:6px;}
+.input-group{position:relative;margin-bottom:16px;}
+.input-group label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;}
+.input-group input,.input-group select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:.2s;}
+.input-group input:focus,.input-group select:focus{border-color:var(--gold);}
+
+/* ─── REFERRAL ─── */
+.ref-box{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.ref-link{display:flex;gap:10px;margin:12px 0;}
+.ref-link input{flex:1;background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--gold);font-size:13px;outline:none;}
+.copy-btn{background:var(--gold);color:#0A0A0F;border:none;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;white-space:nowrap;}
+
+/* ─── TABLE ─── */
+.data-table{width:100%;border-collapse:collapse;font-size:13px;}
+.data-table th{background:var(--bg3);padding:12px 16px;text-align:left;font-weight:600;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px;}
+.data-table td{padding:13px 16px;border-bottom:1px solid var(--border);}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:rgba(245,200,66,0.02);}
+.badge{display:inline-block;padding:3px 10px;border-radius:50px;font-size:11px;font-weight:600;}
+.badge-pending{background:rgba(255,171,0,0.1);color:#FFAB00;}
+.badge-approved{background:rgba(0,230,118,0.1);color:var(--green);}
+.badge-rejected{background:rgba(255,71,87,0.1);color:var(--red);}
+.badge-banned{background:rgba(255,71,87,0.15);color:var(--red);}
+
+/* ─── PROGRESS ─── */
+.progress-bar{height:8px;background:var(--bg3);border-radius:50px;overflow:hidden;margin:8px 0;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--green));border-radius:50px;transition:.5s;}
+
+/* ─── ALERT BANNER ─── */
+.alert-banner{padding:12px 18px;border-radius:10px;font-size:13px;display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.alert-warning{background:rgba(255,171,0,0.1);border:1px solid rgba(255,171,0,0.3);color:#FFAB00;}
+.alert-danger{background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);color:var(--red);}
+.alert-success{background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);color:var(--green);}
+
+/* ─── HAMBURGER ─── */
+.hamburger{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:5px;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;}
+
+/* ─── ADMIN ─── */
+.admin-tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;}
+.tab-btn{padding:9px 18px;border-radius:50px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:13px;font-weight:600;transition:.2s;}
+.tab-btn.active{background:var(--gold);color:#0A0A0F;border-color:var(--gold);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* ─── ADS DISPLAY BANNER ─── */
+.ad-display-area{margin-bottom:20px;border-radius:12px;overflow:hidden;min-height:90px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);}
+
+/* ─── TOAST ─── */
+.toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;}
+.toast{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 18px;min-width:250px;max-width:320px;font-size:13px;display:flex;align-items:center;gap:10px;animation:slideIn .3s ease;box-shadow:0 10px 40px rgba(0,0,0,0.4);}
+.toast.success{border-color:rgba(0,230,118,0.4);}
+.toast.error{border-color:rgba(255,71,87,0.4);}
+.toast.warning{border-color:rgba(255,171,0,0.4);}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-overlay{display:block;}
+  .main-content{margin-left:0;padding:16px;}
+  .hamburger{display:block;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .ads-grid{grid-template-columns:1fr;}
+  .method-grid{grid-template-columns:repeat(3,1fr);}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr;}
+  .auth-box{padding:28px 22px;}
+}
+
+/* ─── TERMS ─── */
+.terms-box{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:22px;max-height:300px;overflow-y:auto;font-size:13px;line-height:1.7;color:var(--muted);margin-bottom:16px;}
+.terms-box h4{color:var(--text);margin-bottom:8px;font-size:14px;}
+.terms-box ul{padding-left:18px;margin-bottom:12px;}
+.terms-box li{margin-bottom:4px;}
+.checkbox-row{display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;}
+.checkbox-row input{width:16px;height:16px;accent-color:var(--gold);cursor:pointer;}
+
+/* ─── SECTION TITLE ─── */
+.section-title{font-size:18px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.section-title span{color:var(--gold);}
+
+.divider{height:1px;background:var(--border);margin:24px 0;}
+
+/* countdown warning */
+.countdown-warn{background:rgba(255,71,87,0.08);border:1px solid rgba(255,71,87,0.2);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--red);margin-bottom:16px;}
+
+/* grid 2 */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ============================================================
+     PAGE: LANDING
+============================================================ -->
+<div class="page active" id="page-landing">
+  <div style="min-height:100vh;background:radial-gradient(ellipse at 50% -10%,rgba(245,200,66,0.12) 0%,transparent 55%),radial-gradient(ellipse at 80% 80%,rgba(0,230,118,0.05) 0%,transparent 50%);">
+    <!-- NAV -->
+    <nav style="display:flex;align-items:center;justify-content:space-between;padding:20px 40px;border-bottom:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:38px;height:38px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;">💰</div>
+        <h2 style="font-size:20px;color:var(--gold);">AdsCash</h2>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-outline" style="width:auto;padding:9px 22px;" onclick="showPage('page-login')">Login</button>
+        <button class="btn btn-gold" style="width:auto;padding:9px 22px;" onclick="showPage('page-register')">Sign Up</button>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <div style="max-width:800px;margin:0 auto;text-align:center;padding:70px 30px 50px;">
+      <div style="display:inline-block;background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.3);border-radius:50px;padding:6px 18px;font-size:12px;font-weight:600;color:var(--gold);margin-bottom:20px;">🚀 EARN REAL MONEY WATCHING ADS</div>
+      <h1 style="font-size:clamp(36px,6vw,62px);line-height:1.1;margin-bottom:20px;">Watch Ads.<br><span style="color:var(--gold);">Earn Cash.</span></h1>
+      <p style="font-size:16px;color:var(--muted);max-width:500px;margin:0 auto 36px;line-height:1.7;">Join thousands of Nigerians earning real money by watching short ads. Withdraw via Bank Transfer, Bitcoin, or USDT.</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-gold" style="width:auto;padding:14px 36px;font-size:16px;" onclick="showPage('page-register')">Start Earning Free →</button>
+        <button class="btn btn-outline" style="width:auto;padding:14px 28px;" onclick="showPage('page-login')">I have account</button>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div style="display:flex;justify-content:center;gap:40px;flex-wrap:wrap;padding:0 30px 50px;">
+      <div style="text-align:center;"><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--gold);">$0.10</div><div style="font-size:13px;color:var(--muted);">Per Ad Watched</div></div>
+      <div style="text-align:center;"><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--green);">$0.20</div><div style="font-size:13px;color:var(--muted);">Per Referral</div></div>
+      <div style="text-align:center;"><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--blue);">$10</div><div style="font-size:13px;color:var(--muted);">Min Withdrawal</div></div>
+      <div style="text-align:center;"><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--text);">20/day</div><div style="font-size:13px;color:var(--muted);">Max Daily Ads</div></div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div style="max-width:800px;margin:0 auto;padding:0 30px 60px;">
+      <h2 style="text-align:center;margin-bottom:30px;font-size:24px;">How It Works</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;">
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center;">
+          <div style="font-size:36px;margin-bottom:12px;">📝</div>
+          <h4 style="margin-bottom:6px;">1. Register</h4>
+          <p style="font-size:13px;color:var(--muted);">Create your free account</p>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center;">
+          <div style="font-size:36px;margin-bottom:12px;">📺</div>
+          <h4 style="margin-bottom:6px;">2. Watch Ads</h4>
+          <p style="font-size:13px;color:var(--muted);">Watch ads daily & earn $0.10 each</p>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center;">
+          <div style="font-size:36px;margin-bottom:12px;">💸</div>
+          <h4 style="margin-bottom:6px;">3. Withdraw</h4>
+          <p style="font-size:13px;color:var(--muted);">Withdraw from $10 to your bank/crypto</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;padding:20px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);">
+      © 2025 AdsCash · <a href="#" onclick="showPage('page-terms')" style="color:var(--gold);text-decoration:none;">Terms & Conditions</a> · Contact: ola068527@gmail.com
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: TERMS
+============================================================ -->
+<div class="page" id="page-terms">
+  <div class="auth-wrap">
+    <div class="auth-box" style="max-width:560px;">
+      <div class="auth-logo">
+        <div class="logo-icon">💰</div>
+        <h1>AdsCash</h1>
+        <p>Terms & Conditions</p>
+      </div>
+      <div class="terms-box" id="fullTermsBox">
+        <h4>1. AD WATCHING RULES</h4>
+        <ul>
+          <li>You must watch each ad for the full duration</li>
+          <li>You can watch up to 20 ads per day</li>
+          <li>Ads reset at midnight daily</li>
+          <li>You MUST watch at least 1 ad every 72 hours</li>
+        </ul>
+        <h4>2. BALANCE RESET POLICY ⚠️</h4>
+        <ul>
+          <li>If you fail to watch ANY ad within 72 hours, your ENTIRE balance will be reset to $0.00</li>
+          <li>No exceptions. No refunds. You have been warned.</li>
+          <li>Set a daily reminder to protect your earnings!</li>
+        </ul>
+        <h4>3. EARNINGS</h4>
+        <ul>
+          <li>$0.10 per ad watched (up to 20/day)</li>
+          <li>$0.20 per verified referral</li>
+          <li>Referral must join via your link and watch at least 5 ads</li>
+        </ul>
+        <h4>4. WITHDRAWAL RULES</h4>
+        <ul>
+          <li>Minimum withdrawal: $10</li>
+          <li>Processing time: 24-48 hours (Manual review)</li>
+          <li>One withdrawal request per 24 hours</li>
+          <li>You must have watched at least 80 ads total to withdraw</li>
+        </ul>
+        <h4>5. PAYMENT METHODS</h4>
+        <ul>
+          <li>Bitcoin (BTC)</li>
+          <li>USDT TRC20</li>
+          <li>Nigerian Bank Transfer</li>
+          <li>Airtime & Data (MTN, Airtel, Glo, 9mobile)</li>
+        </ul>
+        <h4>6. PROHIBITED ACTIVITIES</h4>
+        <ul>
+          <li>Using bots, scripts, or automation</li>
+          <li>Creating multiple accounts</li>
+          <li>Fake referrals or self-referrals</li>
+          <li>Any form of fraud or abuse</li>
+        </ul>
+        <h4>7. ACCOUNT TERMINATION</h4>
+        <ul>
+          <li>Violation of rules = permanent ban</li>
+          <li>All earnings forfeited upon ban</li>
+          <li>Decisions by admin are final</li>
+        </ul>
+        <h4>8. CONTACT & SUPPORT</h4>
+        <ul>
+          <li>Email: ola068527@gmail.com</li>
+          <li>Telegram: @eesha10</li>
+          <li>Response time: Within 24 hours</li>
+        </ul>
+        <p>By using AdsCash, you agree to all above terms.</p>
+      </div>
+      <button class="btn btn-gold" onclick="showPage('page-landing')">← Back to Home</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: LOGIN
+============================================================ -->
+<div class="page" id="page-login">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <div class="logo-icon">💰</div>
+        <h1>AdsCash</h1>
+        <p>Welcome back! Sign in to continue earning.</p>
+      </div>
+      <div class="error-msg" id="loginError"></div>
+      <div class="success-msg" id="loginSuccess"></div>
+      <div class="form-group">
+        <label>Username or Email</label>
+        <input type="text" id="loginUser" placeholder="Enter username or email">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="Enter password">
+      </div>
+      <button class="btn btn-gold" onclick="handleLogin()">Sign In</button>
+      <div class="auth-switch">
+        Don't have an account? <a onclick="showPage('page-register')">Create one free</a>
+      </div>
+      <div class="auth-switch" style="margin-top:8px;">
+        <a onclick="showPage('page-landing')">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: REGISTER
+============================================================ -->
+<div class="page" id="page-register">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <div class="logo-icon">💰</div>
+        <h1>AdsCash</h1>
+        <p>Create your account and start earning today!</p>
+      </div>
+      <div class="error-msg" id="regError"></div>
+      <div class="success-msg" id="regSuccess"></div>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="regName" placeholder="Your full name">
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="regUsername" placeholder="Choose a username">
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="regEmail" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" id="regPhone" placeholder="+234...">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="regPass" placeholder="Min 6 characters">
+      </div>
+      <div class="form-group">
+        <label>Referral Code (optional)</label>
+        <input type="text" id="regRef" placeholder="Enter referral code">
+      </div>
+      <div style="margin-bottom:16px;">
+        <label class="checkbox-row">
+          <input type="checkbox" id="agreeTerms">
+          <span>I agree to the <a href="#" onclick="showPage('page-terms')" style="color:var(--gold);">Terms & Conditions</a></span>
+        </label>
+      </div>
+      <button class="btn btn-gold" onclick="handleRegister()">Create Account</button>
+      <div class="auth-switch">
+        Already have an account? <a onclick="showPage('page-login')">Sign in</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     APP LAYOUT (Dashboard, Ads, Withdraw, Referral, History)
+============================================================ -->
+<div class="page" id="page-app">
+  <div class="app-layout">
+    <!-- SIDEBAR OVERLAY -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="appSidebar">
+      <div class="sidebar-logo">
+        <h2>💰 AdsCash</h2>
+        <span>Earn while you browse</span>
+      </div>
+      <div class="sidebar-nav">
+        <div class="nav-item active" onclick="switchTab('dashboard')"><span class="icon">🏠</span> Dashboard</div>
+        <div class="nav-item" onclick="switchTab('ads')"><span class="icon">📺</span> Watch Ads</div>
+        <div class="nav-item" onclick="switchTab('withdraw')"><span class="icon">💸</span> Withdraw</div>
+        <div class="nav-item" onclick="switchTab('referral')"><span class="icon">👥</span> Referrals</div>
+        <div class="nav-item" onclick="switchTab('history')"><span class="icon">📋</span> History</div>
+        <div class="nav-item" onclick="switchTab('support')"><span class="icon">💬</span> Support</div>
+        <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px;">
+          <div class="nav-item" onclick="handleLogout()"><span class="icon">🚪</span> Logout</div>
+        </div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebarAvatar">AC</div>
+        <div class="user-info">
+          <div class="uname" id="sidebarUsername">Loading...</div>
+          <div class="uid" id="sidebarUID">ID: ---</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-content">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="hamburger" onclick="toggleSidebar()">☰</button>
+          <h2 id="tabTitle">Dashboard</h2>
+        </div>
+        <div class="topbar-right">
+          <div class="balance-pill" id="topBalance">$0.00</div>
+        </div>
+      </div>
+
+      <!-- Adsterra banner -->
+      <div class="ad-display-area" id="adsterraBanner">
+        <a href="https://www.profitablecpmratenetwork.com/maczk05c?key=050e081fb24437c3908f7ed91aa79cc8" target="_blank" rel="noopener" style="display:block;width:100%;">
+          <img src="https://www.profitablecpmratenetwork.com/maczk05c?key=050e081fb24437c3908f7ed91aa79cc8" alt="AdsCash Ads" style="max-width:100%;border-radius:8px;" onerror="this.parentElement.innerHTML='<span>Advertisement</span>'">
+        </a>
+      </div>
+
+      <!-- ── DASHBOARD TAB ── -->
+      <div id="tab-dashboard" class="tab-content active">
+        <div id="dashAlerts"></div>
+        <div class="stats-grid">
+          <div class="stat-card" style="--accent-color:rgba(245,200,66,0.08)">
+            <div class="stat-icon">💰</div>
+            <div class="stat-label">Total Balance</div>
+            <div class="stat-value" id="statBalance">$0.00</div>
+            <div class="stat-sub">Available to withdraw</div>
+          </div>
+          <div class="stat-card" style="--accent-color:rgba(0,230,118,0.08)">
+            <div class="stat-icon">📺</div>
+            <div class="stat-label">Ads Today</div>
+            <div class="stat-value" id="statAdsToday">0/20</div>
+            <div class="stat-sub">Earn $0.10 per ad</div>
+          </div>
+          <div class="stat-card" style="--accent-color:rgba(68,138,255,0.08)">
+            <div class="stat-icon">📊</div>
+            <div class="stat-label">Total Ads Watched</div>
+            <div class="stat-value" id="statTotalAds">0</div>
+            <div class="stat-sub">Need 80 to withdraw</div>
+          </div>
+          <div class="stat-card" style="--accent-color:rgba(0,230,118,0.06)">
+            <div class="stat-icon">👥</div>
+            <div class="stat-label">Referrals</div>
+            <div class="stat-value" id="statRefs">0</div>
+            <div class="stat-sub">$0.20 per verified ref</div>
+          </div>
+        </div>
+
+        <!-- Progress to withdrawal -->
+        <div class="card" style="margin-bottom:18px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <h4 style="font-size:14px;">Progress to Withdrawal</h4>
+            <span style="font-size:13px;color:var(--gold)" id="progressText">0/80 ads</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:6px;" id="progressNote">Watch 80 ads total to unlock withdrawals</div>
+        </div>
+
+        <!-- 72h countdown -->
+        <div class="card" id="countdownCard">
+          <h4 style="font-size:14px;margin-bottom:12px;">⏰ 72-Hour Activity Timer</h4>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:10px;">You must watch at least 1 ad every 72 hours to keep your balance.</p>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--gold);" id="countdownTimer">72:00:00</div>
+            <div style="font-size:12px;color:var(--muted);">remaining before balance reset</div>
+          </div>
+          <div class="progress-bar" style="margin-top:10px;"><div class="progress-fill" id="countdownFill" style="width:100%;background:linear-gradient(90deg,var(--green),var(--gold))"></div></div>
+        </div>
+      </div>
+
+      <!-- ── ADS TAB ── -->
+      <div id="tab-ads" class="tab-content">
+        <div id="adsAlerts"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+          <div class="section-title">Available Ads <span id="adsCountBadge">(0/20)</span></div>
+        </div>
+        <div class="ads-grid" id="adsGrid">
+          <!-- Generated by JS -->
+        </div>
+      </div>
+
+      <!-- ── WITHDRAW TAB ── -->
+      <div id="tab-withdraw" class="tab-content">
+        <div id="withdrawAlerts"></div>
+        <div class="grid-2">
+          <div>
+            <div class="card withdraw-form">
+              <h3 style="margin-bottom:20px;font-size:16px;">Request Withdrawal</h3>
+              <div style="margin-bottom:16px;">
+                <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:10px;">Select Payment Method</label>
+                <div class="method-grid">
+                  <div class="method-btn active" id="mBtn-bank" onclick="selectMethod('bank')"><span class="micon">🏦</span>Bank Transfer</div>
+                  <div class="method-btn" id="mBtn-bitcoin" onclick="selectMethod('bitcoin')"><span class="micon">₿</span>Bitcoin</div>
+                  <div class="method-btn" id="mBtn-usdt" onclick="selectMethod('usdt')"><span class="micon">💎</span>USDT TRC20</div>
+                </div>
+              </div>
+              <div class="input-group">
+                <label>Amount ($)</label>
+                <input type="number" id="wAmount" placeholder="Min $10.00" min="10" step="0.01">
+              </div>
+              <div id="bankFields">
+                <div class="input-group"><label>Bank Name</label><input type="text" id="wBankName" placeholder="e.g. GTBank, Access Bank"></div>
+                <div class="input-group"><label>Account Number</label><input type="text" id="wAccNum" placeholder="10-digit account number"></div>
+                <div class="input-group"><label>Account Name</label><input type="text" id="wAccName" placeholder="Account holder name"></div>
+              </div>
+              <div id="cryptoFields" style="display:none;">
+                <div class="input-group"><label id="cryptoLabel">Wallet Address</label><input type="text" id="wWallet" placeholder="Enter wallet address"></div>
+              </div>
+              <button class="btn btn-gold" onclick="submitWithdrawal()">Request Withdrawal</button>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <h4 style="margin-bottom:14px;font-size:14px;">Withdrawal Info</h4>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--muted)">Available Balance</span><span style="color:var(--gold);font-weight:700" id="wBalance">$0.00</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--muted)">Minimum Withdrawal</span><span>$10.00</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--muted)">Processing Time</span><span>24-48 hours</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--muted)">Total Ads Watched</span><span id="wAdsCount">0/80</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--muted)">Withdrawal Status</span><span id="wEligible" style="color:var(--red);">Not eligible</span></div>
+              </div>
+            </div>
+            <div class="card" style="margin-top:14px;">
+              <h4 style="margin-bottom:12px;font-size:14px;">Recent Withdrawals</h4>
+              <div id="recentWithdrawals" style="font-size:13px;color:var(--muted);">No withdrawals yet.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── REFERRAL TAB ── -->
+      <div id="tab-referral" class="tab-content">
+        <div class="grid-2" style="margin-bottom:18px;">
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-label">Total Referrals</div>
+            <div class="stat-value" id="refTotal">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-label">Referral Earnings</div>
+            <div class="stat-value" id="refEarnings">$0.00</div>
+          </div>
+        </div>
+        <div class="ref-box" style="margin-bottom:20px;">
+          <h4 style="margin-bottom:6px;">Your Referral Link</h4>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:10px;">Share this link and earn $0.20 when your referral watches 5+ ads.</p>
+          <div class="ref-link">
+            <input type="text" id="refLink" readonly>
+            <button class="copy-btn" onclick="copyRefLink()">Copy</button>
+          </div>
+          <p style="font-size:12px;color:var(--muted);">Your referral code: <strong style="color:var(--gold)" id="refCode">---</strong></p>
+        </div>
+        <div class="card">
+          <h4 style="margin-bottom:14px;font-size:14px;">Referral List</h4>
+          <div id="refList" style="font-size:13px;color:var(--muted);">No referrals yet. Share your link to start earning!</div>
+        </div>
+      </div>
+
+      <!-- ── HISTORY TAB ── -->
+      <div id="tab-history" class="tab-content">
+        <div class="card">
+          <h4 style="margin-bottom:16px;font-size:15px;">Transaction History</h4>
+          <div id="txHistory" style="font-size:13px;color:var(--muted);">No transactions yet.</div>
+        </div>
+      </div>
+
+      <!-- ── SUPPORT TAB ── -->
+      <div id="tab-support" class="tab-content">
+        <div class="card" style="max-width:560px;">
+          <h3 style="margin-bottom:16px;">Contact Support</h3>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;align-items:center;gap:14px;">
+              <span style="font-size:28px;">📧</span>
+              <div><div style="font-size:13px;font-weight:600;">Email Support</div><div style="font-size:12px;color:var(--muted);">ola068527@gmail.com</div></div>
+            </div>
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;align-items:center;gap:14px;">
+              <span style="font-size:28px;">✈️</span>
+              <div><div style="font-size:13px;font-weight:600;">Telegram</div><div style="font-size:12px;color:var(--muted);">@eesha10</div></div>
+            </div>
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;">
+              <div style="font-size:13px;font-weight:600;margin-bottom:4px;">⏱ Response Time</div>
+              <div style="font-size:12px;color:var(--muted);">Within 24 hours on business days</div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <h4 style="margin-bottom:12px;">FAQ</h4>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
+            <details style="background:var(--bg3);border-radius:8px;padding:12px;border:1px solid var(--border);cursor:pointer;">
+              <summary style="font-weight:600;list-style:none;">Why was my balance reset to $0?</summary>
+              <p style="margin-top:8px;color:var(--muted);">You must watch at least 1 ad every 72 hours. If 72 hours pass without watching any ad, your balance resets automatically.</p>
+            </details>
+            <details style="background:var(--bg3);border-radius:8px;padding:12px;border:1px solid var(--border);cursor:pointer;">
+              <summary style="font-weight:600;list-style:none;">When can I withdraw?</summary>
+              <p style="margin-top:8px;color:var(--muted);">You need a minimum of $10 balance AND at least 80 total ads watched to request a withdrawal.</p>
+            </details>
+            <details style="background:var(--bg3);border-radius:8px;padding:12px;border:1px solid var(--border);cursor:pointer;">
+              <summary style="font-weight:600;list-style:none;">How long does withdrawal take?</summary>
+              <p style="margin-top:8px;color:var(--muted);">Withdrawals are manually processed within 24-48 hours.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end main-content -->
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: ADMIN
+============================================================ -->
+<div class="page" id="page-admin">
+  <div class="app-layout">
+    <div class="sidebar-overlay" id="adminOverlay" onclick="closeAdminSidebar()"></div>
+    <div class="sidebar" id="adminSidebar">
+      <div class="sidebar-logo">
+        <h2>⚙️ Admin</h2>
+        <span>AdsCash Panel</span>
+      </div>
+      <div class="sidebar-nav">
+        <div class="nav-item active" onclick="adminTab('overview')"><span class="icon">📊</span> Overview</div>
+        <div class="nav-item" onclick="adminTab('users')"><span class="icon">👥</span> Users</div>
+        <div class="nav-item" onclick="adminTab('withdrawals')"><span class="icon">💸</span> Withdrawals</div>
+        <div class="nav-item" onclick="adminTab('ads-watched')"><span class="icon">📺</span> Ads Watched</div>
+        <div class="nav-item" onclick="adminTab('tasks')"><span class="icon">➕</span> Manage Tasks</div>
+        <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px;">
+          <div class="nav-item" onclick="handleLogout()"><span class="icon">🚪</span> Logout</div>
+        </div>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="hamburger" onclick="toggleAdminSidebar()">☰</button>
+          <h2 id="adminTabTitle">Admin Overview</h2>
+        </div>
+        <div class="topbar-right">
+          <div class="balance-pill">Admin Panel</div>
+        </div>
+      </div>
+
+      <!-- OVERVIEW -->
+      <div id="atab-overview" class="tab-content active">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">Total Users</div><div class="stat-value" id="adminTotalUsers">0</div></div>
+          <div class="stat-card"><div class="stat-icon">📺</div><div class="stat-label">Total Ads Watched</div><div class="stat-value" id="adminTotalAds">0</div></div>
+          <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-label">Pending Withdrawals</div><div class="stat-value" id="adminPendingW">0</div></div>
+          <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">Total Paid Out</div><div class="stat-value" id="adminTotalPaid">$0.00</div></div>
+        </div>
+      </div>
+
+      <!-- USERS -->
+      <div id="atab-users" class="tab-content">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+            <h4>All Users</h4>
+            <input type="text" id="userSearch" placeholder="Search users..." oninput="renderAdminUsers()" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;outline:none;width:200px;">
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table" id="usersTable">
+              <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Balance</th><th>Ads</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="usersTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- WITHDRAWALS -->
+      <div id="atab-withdrawals" class="tab-content">
+        <div class="card">
+          <h4 style="margin-bottom:14px;">All Withdrawal Requests</h4>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead><tr><th>ID</th><th>User</th><th>Amount</th><th>Method</th><th>Details</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="withdrawalsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADS WATCHED -->
+      <div id="atab-ads-watched" class="tab-content">
+        <div class="card">
+          <h4 style="margin-bottom:14px;">Ads Watch Log</h4>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead><tr><th>User</th><th>Ad</th><th>Earned</th><th>Date & Time</th></tr></thead>
+              <tbody id="adsWatchedTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TASKS -->
+      <div id="atab-tasks" class="tab-content">
+        <div class="grid-2">
+          <div class="card">
+            <h4 style="margin-bottom:16px;">Add New Ad Task</h4>
+            <div class="input-group"><label>Ad Title</label><input type="text" id="taskTitle" placeholder="e.g. Watch Product Demo"></div>
+            <div class="input-group"><label>Description</label><input type="text" id="taskDesc" placeholder="Short description"></div>
+            <div class="input-group"><label>Duration (seconds)</label><input type="number" id="taskDuration" placeholder="30" value="30"></div>
+            <div class="input-group"><label>Reward ($)</label><input type="number" id="taskReward" placeholder="0.10" value="0.10" step="0.01"></div>
+            <div class="input-group"><label>Category Emoji</label><input type="text" id="taskEmoji" placeholder="📺" value="📺"></div>
+            <button class="btn btn-gold" onclick="addTask()">Add Task</button>
+          </div>
+          <div class="card">
+            <h4 style="margin-bottom:14px;">Current Tasks</h4>
+            <div id="tasksList" style="font-size:13px;"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     AD WATCH MODAL
+============================================================ -->
+<div class="modal-overlay" id="adModal">
+  <div class="modal">
+    <h3 style="margin-bottom:6px;" id="modalAdTitle">Watching Ad</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Please watch the full ad to earn your reward.</p>
+    <div class="timer-circle timer-static" id="timerCircle">
+      <span id="timerNum">30</span>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px;" id="timerMsg">Watching in progress...</p>
+    <!-- Popunder ad script loads here -->
+    <div id="adContent" style="margin-bottom:18px;"></div>
+    <button class="btn btn-gold" id="claimBtn" disabled onclick="claimAdReward()">Claim Reward</button>
+    <button class="btn btn-outline" style="margin-top:10px;" onclick="closeAdModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- Popunder Script -->
+<script src="https://pl29380637.profitablecpmratenetwork.com/41/67/ab/4167ab577062b72972378e7b88e3ac00.js" async></script>
+
+<script>
+// ================================================================
+//  DATABASE (localStorage)
+// ================================================================
+const DB = {
+  get: (k) => { try { return JSON.parse(localStorage.getItem('adscash_'+k)) } catch(e){ return null } },
+  set: (k,v) => localStorage.setItem('adscash_'+k, JSON.stringify(v)),
+  
+  getUsers: () => DB.get('users') || [],
+  setUsers: (u) => DB.set('users',u),
+  
+  getWithdrawals: () => DB.get('withdrawals') || [],
+  setWithdrawals: (w) => DB.set('withdrawals',w),
+  
+  getWatchLog: () => DB.get('watchlog') || [],
+  setWatchLog: (l) => DB.set('watchlog',l),
+  
+  getTasks: () => DB.get('tasks') || defaultTasks(),
+  setTasks: (t) => DB.set('tasks',t),
+  
+  getCurrentUser: () => DB.get('currentUser'),
+  setCurrentUser: (u) => DB.set('currentUser',u),
+  clearCurrentUser: () => localStorage.removeItem('adscash_currentUser'),
+  
+  // Update user in DB
+  updateUser: (updated) => {
+    const users = DB.getUsers();
+    const idx = users.findIndex(u=>u.id===updated.id);
+    if(idx>-1){ users[idx]=updated; DB.setUsers(users); }
+    if(DB.getCurrentUser()?.id===updated.id) DB.setCurrentUser(updated);
+  }
+};
+
+function defaultTasks(){
+  return [
+    {id:'t1',title:'Watch Brand Commercial',desc:'30-second product advertisement',duration:30,reward:0.10,emoji:'📺',category:'Brand'},
+    {id:'t2',title:'App Download Promo',desc:'Explore a new mobile app',duration:35,reward:0.10,emoji:'📱',category:'App'},
+    {id:'t3',title:'E-commerce Ad',desc:'Discover amazing online deals',duration:30,reward:0.10,emoji:'🛍️',category:'Shopping'},
+    {id:'t4',title:'Finance Service Ad',desc:'Learn about banking solutions',duration:40,reward:0.10,emoji:'🏦',category:'Finance'},
+    {id:'t5',title:'Gaming Ad',desc:'Check out this exciting game',duration:30,reward:0.10,emoji:'🎮',category:'Gaming'},
+    {id:'t6',title:'Food Delivery Promo',desc:'Order food at great discounts',duration:25,reward:0.10,emoji:'🍔',category:'Food'},
+    {id:'t7',title:'Crypto Exchange Ad',desc:'Trade crypto with ease',duration:35,reward:0.10,emoji:'₿',category:'Crypto'},
+    {id:'t8',title:'Health App Promo',desc:'Stay healthy with this app',duration:30,reward:0.10,emoji:'💊',category:'Health'},
+    {id:'t9',title:'Travel Deals Ad',desc:'Book amazing travel deals',duration:40,reward:0.10,emoji:'✈️',category:'Travel'},
+    {id:'t10',title:'Education Platform',desc:'Learn skills online',duration:30,reward:0.10,emoji:'📚',category:'Education'},
+    {id:'t11',title:'Sports Betting Promo',desc:'Bet & win big',duration:35,reward:0.10,emoji:'⚽',category:'Sports'},
+    {id:'t12',title:'Fashion Brand Ad',desc:'Trendy clothes & accessories',duration:30,reward:0.10,emoji:'👗',category:'Fashion'},
+    {id:'t13',title:'Streaming Service',desc:'Watch movies & shows',duration:30,reward:0.10,emoji:'🎬',category:'Entertainment'},
+    {id:'t14',title:'Insurance Ad',desc:'Protect what matters',duration:40,reward:0.10,emoji:'🛡️',category:'Insurance'},
+    {id:'t15',title:'Telecom Promo',desc:'Best data & call plans',duration:30,reward:0.10,emoji:'📶',category:'Telecom'},
+    {id:'t16',title:'Real Estate Ad',desc:'Find your dream home',duration:45,reward:0.10,emoji:'🏠',category:'Realty'},
+    {id:'t17',title:'Ride Share Promo',desc:'Get around faster',duration:30,reward:0.10,emoji:'🚗',category:'Transport'},
+    {id:'t18',title:'Online Course Ad',desc:'Upgrade your skills',duration:35,reward:0.10,emoji:'🎓',category:'Education'},
+    {id:'t19',title:'VPN Service Ad',desc:'Browse securely',duration:30,reward:0.10,emoji:'🔐',category:'Tech'},
+    {id:'t20',title:'Solar Energy Promo',desc:'Go green & save money',duration:40,reward:0.10,emoji:'☀️',category:'Energy'},
+  ];
+}
+
+// ================================================================
+//  HELPERS
+// ================================================================
+function genUID(){return 'AC'+Math.random().toString(36).substr(2,8).toUpperCase();}
+function genRefCode(username){return username.toUpperCase().substr(0,4)+Math.floor(1000+Math.random()*9000);}
+function now(){return Date.now();}
+function fmt(n){return '$'+Number(n).toFixed(2);}
+function fmtDate(ts){return new Date(ts).toLocaleString();}
+
+function toast(msg, type='success'){
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  const icons = {success:'✅',error:'❌',warning:'⚠️',info:'ℹ️'};
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(()=>{ t.style.animation='slideIn .3s ease reverse'; setTimeout(()=>t.remove(),300); },3500);
+}
+
+// Init admin account
+function initAdmin(){
+  const users = DB.getUsers();
+  if(!users.find(u=>u.username==='eesha10')){
+    users.push({
+      id:'ADMIN001',username:'eesha10',email:'ola068527@gmail.com',
+      password:'admin2025',name:'Admin',phone:'',
+      balance:0,totalAds:0,adsToday:0,lastAdDate:'',lastAdTime:0,
+      joinDate:now(),referralCode:'ADMIN0000',referredBy:null,
+      referrals:[],refEarnings:0,transactions:[],
+      status:'active',isAdmin:true,uid:'ADMIN001',
+      totalEarned:0
+    });
+    DB.setUsers(users);
+  }
+}
+
+// ================================================================
+//  PAGE NAVIGATION
+// ================================================================
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ================================================================
+//  AUTH
+// ================================================================
+function handleRegister(){
+  const name=document.getElementById('regName').value.trim();
+  const username=document.getElementById('regUsername').value.trim().toLowerCase();
+  const email=document.getElementById('regEmail').value.trim().toLowerCase();
+  const phone=document.getElementById('regPhone').value.trim();
+  const pass=document.getElementById('regPass').value;
+  const refCode=document.getElementById('regRef').value.trim().toUpperCase();
+  const agree=document.getElementById('agreeTerms').checked;
+  
+  const errEl=document.getElementById('regError');
+  const sucEl=document.getElementById('regSuccess');
+  errEl.style.display='none'; sucEl.style.display='none';
+  
+  function showErr(m){errEl.textContent=m;errEl.style.display='block';}
+  
+  if(!name||!username||!email||!pass){return showErr('Please fill all required fields.');}
+  if(pass.length<6){return showErr('Password must be at least 6 characters.');}
+  if(!agree){return showErr('Please agree to the Terms & Conditions.');}
+  if(!/^[a-zA-Z0-9_]+$/.test(username)){return showErr('Username can only contain letters, numbers, underscores.');}
+  
+  const users=DB.getUsers();
+  if(users.find(u=>u.username===username)){return showErr('Username already taken.');}
+  if(users.find(u=>u.email===email)){return showErr('Email already registered.');}
+  
+  let referredBy=null;
+  if(refCode){
+    const refUser=users.find(u=>u.referralCode===refCode);
+    if(!refUser){return showErr('Invalid referral code.');}
+    referredBy=refUser.id;
+  }
+  
+  const uid=genUID();
+  const newUser={
+    id:uid,username,email,password:pass,name,phone,
+    balance:0,totalAds:0,adsToday:0,lastAdDate:'',lastAdTime:0,
+    joinDate:now(),referralCode:genRefCode(username),referredBy,
+    referrals:[],refEarnings:0,transactions:[],
+    status:'active',isAdmin:false,uid,
+    totalEarned:0,
+    watchedAdsToday:[]
+  };
+  users.push(newUser);
+  DB.setUsers(users);
+  
+  sucEl.textContent='Account created! Redirecting to login...';
+  sucEl.style.display='block';
+  setTimeout(()=>showPage('page-login'),1500);
+}
+
+function handleLogin(){
+  const user=document.getElementById('loginUser').value.trim().toLowerCase();
+  const pass=document.getElementById('loginPass').value;
+  const errEl=document.getElementById('loginError');
+  errEl.style.display='none';
+  
+  const users=DB.getUsers();
+  const found=users.find(u=>(u.username===user||u.email===user)&&u.password===pass);
+  
+  if(!found){errEl.textContent='Invalid credentials.';errEl.style.display='block';return;}
+  if(found.status==='banned'){errEl.textContent='Your account has been banned. Contact support.';errEl.style.display='block';return;}
+  
+  DB.setCurrentUser(found);
+  
+  if(found.isAdmin){
+    showPage('page-admin');
+    loadAdminPanel();
+  } else {
+    checkBalanceReset(found);
+    showPage('page-app');
+    loadUserApp();
+  }
+}
+
+function handleLogout(){
+  DB.clearCurrentUser();
+  showPage('page-landing');
+}
+
+// ================================================================
+//  BALANCE RESET LOGIC
+// ================================================================
+function checkBalanceReset(user){
+  if(!user.lastAdTime) return;
+  const elapsed = now() - user.lastAdTime;
+  const limit = 72*60*60*1000;
+  if(elapsed > limit && user.balance > 0){
+    user.balance = 0;
+    user.transactions = user.transactions || [];
+    user.transactions.unshift({type:'reset',amount:0,desc:'Balance reset - 72h inactivity',date:now()});
+    DB.updateUser(user);
+    toast('⚠️ Your balance was reset due to 72h inactivity!','warning');
+  }
+}
+
+// ================================================================
+//  USER APP
+// ================================================================
+let currentAdTimer=null;
+let currentAdId=null;
+let currentAdReward=0;
+
+function loadUserApp(){
+  const u=DB.getCurrentUser();
+  if(!u){showPage('page-login');return;}
+  
+  // Reset today's ads if new day
+  const today=new Date().toDateString();
+  if(u.lastAdDate !== today){
+    u.adsToday=0;
+    u.watchedAdsToday=[];
+    u.lastAdDate=today;
+    DB.updateUser(u);
+  }
+  
+  // Sidebar info
+  document.getElementById('sidebarUsername').textContent=u.username;
+  document.getElementById('sidebarUID').textContent='ID: '+u.uid;
+  document.getElementById('sidebarAvatar').textContent=u.username[0].toUpperCase();
+  
+  updateDashboard();
+  renderAds();
+  startCountdownTimer();
+  
+  // Auto refresh every 30s
+  setInterval(()=>{
+    const fresh=DB.getUsers().find(x=>x.id===(DB.getCurrentUser()?.id));
+    if(fresh) DB.setCurrentUser(fresh);
+    updateDashboard();
+  },30000);
+}
+
+function updateDashboard(){
+  const u=DB.getCurrentUser();
+  if(!u)return;
+  const fresh=DB.getUsers().find(x=>x.id===u.id)||u;
+  DB.setCurrentUser(fresh);
+  
+  const bal=Number(fresh.balance||0).toFixed(2);
+  document.getElementById('topBalance').textContent='$'+bal;
+  document.getElementById('statBalance').textContent='$'+bal;
+  document.getElementById('statAdsToday').textContent=(fresh.adsToday||0)+'/20';
+  document.getElementById('statTotalAds').textContent=fresh.totalAds||0;
+  document.getElementById('statRefs').textContent=(fresh.referrals||[]).length;
+  document.getElementById('wBalance').textContent='$'+bal;
+  document.getElementById('wAdsCount').textContent=(fresh.totalAds||0)+'/80';
+  
+  // Progress
+  const prog=Math.min((fresh.totalAds||0)/80*100,100);
+  document.getElementById('progressFill').style.width=prog+'%';
+  document.getElementById('progressText').textContent=(fresh.totalAds||0)+'/80 ads';
+  if((fresh.totalAds||0)>=80){
+    document.getElementById('progressNote').textContent='✅ Eligible for withdrawal!';
+    document.getElementById('wEligible').textContent='✅ Eligible';
+    document.getElementById('wEligible').style.color='var(--green)';
+  } else {
+    document.getElementById('progressNote').textContent='Watch '+(80-(fresh.totalAds||0))+' more ads to unlock withdrawals';
+    document.getElementById('wEligible').textContent='❌ Not eligible (need 80 ads)';
+    document.getElementById('wEligible').style.color='var(--red)';
+  }
+  
+  // 72h alert
+  const alerts=document.getElementById('dashAlerts');
+  if(fresh.lastAdTime){
+    const elapsed=now()-fresh.lastAdTime;
+    const remaining=Math.max(0,72*3600000-elapsed);
+    if(remaining<12*3600000 && remaining>0){
+      alerts.innerHTML=`<div class="countdown-warn">⚠️ Warning: Only ${formatTime(remaining)} left before your balance resets! Watch an ad now!</div>`;
+    } else { alerts.innerHTML=''; }
+  }
+  
+  // Referral info
+  document.getElementById('refTotal').textContent=(fresh.referrals||[]).length;
+  document.getElementById('refEarnings').textContent=fmt(fresh.refEarnings||0);
+  document.getElementById('refCode').textContent=fresh.referralCode;
+  document.getElementById('refLink').value=window.location.href.split('?')[0]+'?ref='+fresh.referralCode;
+  
+  renderReferrals(fresh);
+  renderHistory(fresh);
+  renderRecentWithdrawals(fresh);
+  renderAds();
+}
+
+function renderAds(){
+  const u=DB.getCurrentUser();
+  if(!u)return;
+  const fresh=DB.getUsers().find(x=>x.id===u.id)||u;
+  const tasks=DB.getTasks();
+  const today=new Date().toDateString();
+  const watched=fresh.watchedAdsToday||[];
+  const adsLeft=Math.max(0,20-( fresh.adsToday||0));
+  
+  document.getElementById('adsCountBadge').textContent='('+(fresh.adsToday||0)+'/20)';
+  
+  let alert='';
+  if(fresh.adsToday>=20) alert=`<div class="alert-banner alert-warning">🎉 You've watched all 20 ads today! Come back tomorrow for more earnings.</div>`;
+  else if(fresh.status==='banned') alert=`<div class="alert-banner alert-danger">🚫 Your account is banned.</div>`;
+  document.getElementById('adsAlerts').innerHTML=alert;
+  
+  const grid=document.getElementById('adsGrid');
+  grid.innerHTML='';
+  
+  tasks.forEach(task=>{
+    const done=watched.includes(task.id);
+    const card=document.createElement('div');
+    card.className='ad-card';
+    card.innerHTML=`
+      <div class="ad-thumb">
+        <span style="font-size:44px">${task.emoji}</span>
+        <span class="ad-earn-badge">+$${Number(task.reward).toFixed(2)}</span>
+      </div>
+      <div class="ad-body">
+        <div class="ad-title">${task.title}</div>
+        <div class="ad-meta">${task.desc} · ${task.duration}s</div>
+        ${done
+          ? `<div class="watched-badge">✅ Watched Today</div>`
+          : fresh.adsToday>=20
+            ? `<button class="btn-watch" disabled>Daily Limit Reached</button>`
+            : `<button class="btn-watch" onclick="startAd('${task.id}','${task.title}',${task.duration},${task.reward})">Watch & Earn</button>`
+        }
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function startAd(id,title,duration,reward){
+  const u=DB.getCurrentUser();
+  if(!u || u.status==='banned'){ toast('Account banned','error'); return; }
+  if((u.adsToday||0)>=20){ toast('Daily limit reached!','warning'); return; }
+  
+  currentAdId=id;
+  currentAdReward=reward;
+  
+  document.getElementById('modalAdTitle').textContent=title;
+  document.getElementById('timerNum').textContent=duration;
+  document.getElementById('claimBtn').disabled=true;
+  document.getElementById('timerMsg').textContent='Watching in progress...';
+  document.getElementById('adModal').classList.add('active');
+  
+  let t=duration;
+  currentAdTimer=setInterval(()=>{
+    t--;
+    document.getElementById('timerNum').textContent=t;
+    if(t<=0){
+      clearInterval(currentAdTimer);
+      document.getElementById('timerMsg').textContent='✅ Ad complete! Claim your reward.';
+      document.getElementById('claimBtn').disabled=false;
+      document.getElementById('timerCircle').style.animation='none';
+      document.getElementById('timerCircle').style.borderColor='var(--green)';
+      document.getElementById('timerCircle').style.color='var(--green)';
+    }
+  },1000);
+}
+
+function claimAdReward(){
+  const u=DB.getUsers().find(x=>x.id===(DB.getCurrentUser()?.id));
+  if(!u) return;
+  
+  u.balance=(Number(u.balance||0)+Number(currentAdReward));
+  u.totalAds=(u.totalAds||0)+1;
+  u.adsToday=(u.adsToday||0)+1;
+  u.lastAdTime=now();
+  u.lastAdDate=new Date().toDateString();
+  u.watchedAdsToday=u.watchedAdsToday||[];
+  u.watchedAdsToday.push(currentAdId);
+  u.totalEarned=(u.totalEarned||0)+Number(currentAdReward);
+  u.transactions=u.transactions||[];
+  u.transactions.unshift({type:'earn',amount:currentAdReward,desc:'Ad watched: '+currentAdId,date:now()});
+  
+  // Check referral bonus (if referrer exists and this user just hit 5 ads)
+  if(u.totalAds===5 && u.referredBy){
+    const users=DB.getUsers();
+    const refUser=users.find(x=>x.id===u.referredBy);
+    if(refUser && !refUser.referrals.includes(u.id)){
+      refUser.balance=(Number(refUser.balance||0)+0.20);
+      refUser.refEarnings=(Number(refUser.refEarnings||0)+0.20);
+      refUser.referrals=[...(refUser.referrals||[]),u.id];
+      refUser.transactions=refUser.transactions||[];
+      refUser.transactions.unshift({type:'referral',amount:0.20,desc:'Referral bonus from '+u.username,date:now()});
+      refUser.totalEarned=(refUser.totalEarned||0)+0.20;
+      DB.updateUser(refUser);
+    }
+  }
+  
+  // Watch log
+  const log=DB.getWatchLog();
+  log.unshift({userId:u.id,username:u.username,adId:currentAdId,earned:currentAdReward,date:now()});
+  DB.setWatchLog(log);
+  
+  DB.updateUser(u);
+  DB.setCurrentUser(u);
+  
+  closeAdModal();
+  toast(`+$${Number(currentAdReward).toFixed(2)} earned!`,'success');
+  updateDashboard();
+}
+
+function closeAdModal(){
+  clearInterval(currentAdTimer);
+  document.getElementById('adModal').classList.remove('active');
+  document.getElementById('timerCircle').style.animation='';
+  document.getElementById('timerCircle').style.borderColor='';
+  document.getElementById('timerCircle').style.color='';
+}
+
+// Countdown timer
+function startCountdownTimer(){
+  setInterval(()=>{
+    const u=DB.getCurrentUser();
+    if(!u)return;
+    const elapsed=u.lastAdTime ? now()-u.lastAdTime : 0;
+    const remaining=Math.max(0, 72*3600000 - elapsed);
+    document.getElementById('countdownTimer').textContent=formatTime(remaining);
+    const pct=u.lastAdTime ? (remaining/(72*3600000))*100 : 100;
+    document.getElementById('countdownFill').style.width=pct+'%';
+    document.getElementById('countdownFill').style.background=
+      pct<25 ? 'linear-gradient(90deg,var(--red),#FF6B7A)' :
+      pct<50 ? 'linear-gradient(90deg,#FFAB00,var(--gold))' :
+      'linear-gradient(90deg,var(--green),var(--gold))';
+    if(remaining===0 && u.balance>0) checkBalanceReset(u);
+  },1000);
+}
+
+function formatTime(ms){
+  const h=Math.floor(ms/3600000);
+  const m=Math.floor((ms%3600000)/60000);
+  const s=Math.floor((ms%60000)/1000);
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+// ================================================================
+//  WITHDRAWAL
+// ================================================================
+let selectedMethod='bank';
+function selectMethod(m){
+  selectedMethod=m;
+  document.querySelectorAll('.method-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('mBtn-'+m).classList.add('active');
+  document.getElementById('bankFields').style.display=(m==='bank')?'block':'none';
+  document.getElementById('cryptoFields').style.display=(m!=='bank')?'block':'none';
+  if(m==='bitcoin') document.getElementById('cryptoLabel').textContent='Bitcoin Address';
+  if(m==='usdt') document.getElementById('cryptoLabel').textContent='USDT TRC20 Address';
+}
+
+function submitWithdrawal(){
+  const u=DB.getCurrentUser();
+  if(!u){toast('Not logged in','error');return;}
+  const fresh=DB.getUsers().find(x=>x.id===u.id)||u;
+  const amount=parseFloat(document.getElementById('wAmount').value);
+  
+  if(!amount||amount<10){toast('Minimum withdrawal is $10','error');return;}
+  if(fresh.balance<amount){toast('Insufficient balance','error');return;}
+  if((fresh.totalAds||0)<80){toast('You need to watch 80 ads total first','error');return;}
+  
+  // Check 24h cooldown
+  const wds=DB.getWithdrawals().filter(w=>w.userId===fresh.id&&w.status==='pending');
+  if(wds.length>0){
+    const last=wds[0];
+    if(now()-last.date < 24*3600000){toast('One withdrawal request per 24 hours','warning');return;}
+  }
+  
+  let details={};
+  if(selectedMethod==='bank'){
+    const bankName=document.getElementById('wBankName').value.trim();
+    const accNum=document.getElementById('wAccNum').value.trim();
+    const accName=document.getElementById('wAccName').value.trim();
+    if(!bankName||!accNum||!accName){toast('Please fill all bank details','error');return;}
+    details={bankName,accNum,accName};
+  } else {
+    const wallet=document.getElementById('wWallet').value.trim();
+    if(!wallet){toast('Please enter wallet address','error');return;}
+    details={wallet};
+  }
+  
+  const wd={
+    id:'W'+Date.now(),userId:fresh.id,username:fresh.username,
+    amount,method:selectedMethod,details,status:'pending',date:now()
+  };
+  
+  const wds2=DB.getWithdrawals();
+  wds2.unshift(wd);
+  DB.setWithdrawals(wds2);
+  
+  // Deduct balance
+  fresh.balance=Number(fresh.balance)-amount;
+  fresh.transactions=fresh.transactions||[];
+  fresh.transactions.unshift({type:'withdrawal',amount,desc:'Withdrawal requested via '+selectedMethod,date:now(),wdId:wd.id});
+  DB.updateUser(fresh);
+  DB.setCurrentUser(fresh);
+  
+  toast('Withdrawal request submitted! Processing in 24-48 hours.','success');
+  updateDashboard();
+  document.getElementById('wAmount').value='';
+}
+
+function renderRecentWithdrawals(u){
+  const wds=DB.getWithdrawals().filter(w=>w.userId===u.id).slice(0,5);
+  const el=document.getElementById('recentWithdrawals');
+  if(!wds.length){el.innerHTML='<span style="color:var(--muted)">No withdrawals yet.</span>';return;}
+  el.innerHTML=`<table class="data-table"><thead><tr><th>Amount</th><th>Method</th><th>Date</th><th>Status</th></tr></thead><tbody>
+    ${wds.map(w=>`<tr><td>${fmt(w.amount)}</td><td>${w.method}</td><td>${new Date(w.date).toLocaleDateString()}</td><td><span class="badge badge-${w.status}">${w.status}</span></td></tr>`).join('')}
+  </tbody></table>`;
+}
+
+// ================================================================
+//  REFERRALS & HISTORY
+// ================================================================
+function copyRefLink(){
+  const link=document.getElementById('refLink').value;
+  navigator.clipboard.writeText(link).then(()=>toast('Referral link copied!','success'));
+}
+
+function renderReferrals(u){
+  const users=DB.getUsers();
+  const refs=(u.referrals||[]).map(id=>users.find(x=>x.id===id)).filter(Boolean);
+  const el=document.getElementById('refList');
+  if(!refs.length){el.innerHTML='<span style="color:var(--muted)">No referrals yet.</span>';return;}
+  el.innerHTML=`<table class="data-table"><thead><tr><th>Username</th><th>Ads Watched</th><th>Status</th><th>Bonus Earned</th></tr></thead><tbody>
+    ${refs.map(r=>`<tr><td>${r.username}</td><td>${r.totalAds||0}</td><td><span class="badge badge-approved">Verified</span></td><td style="color:var(--green)">$0.20</td></tr>`).join('')}
+  </tbody></table>`;
+}
+
+function renderHistory(u){
+  const txs=(u.transactions||[]).slice(0,30);
+  const el=document.getElementById('txHistory');
+  if(!txs.length){el.innerHTML='<span style="color:var(--muted)">No transactions yet.</span>';return;}
+  el.innerHTML=`<table class="data-table"><thead><tr><th>Type</th><th>Amount</th><th>Description</th><th>Date</th></tr></thead><tbody>
+    ${txs.map(t=>`<tr>
+      <td><span class="badge ${t.type==='earn'||t.type==='referral'?'badge-approved':t.type==='reset'?'badge-rejected':'badge-pending'}">${t.type}</span></td>
+      <td style="color:${t.type==='earn'||t.type==='referral'?'var(--green)':t.type==='reset'?'var(--red)':'var(--gold)'}">
+        ${t.type==='earn'||t.type==='referral'?'+':'-'}${fmt(t.amount)}</td>
+      <td>${t.desc}</td>
+      <td>${new Date(t.date).toLocaleDateString()}</td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+// ================================================================
+//  TAB SWITCHING
+// ================================================================
+function switchTab(name){
+  document.querySelectorAll('#page-app .tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#page-app .nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  const titles={dashboard:'Dashboard',ads:'Watch Ads',withdraw:'Withdraw',referral:'Referrals',history:'History',support:'Support'};
+  document.getElementById('tabTitle').textContent=titles[name]||name;
+  
+  const navItems=document.querySelectorAll('#page-app .nav-item');
+  const idx={dashboard:0,ads:1,withdraw:2,referral:3,history:4,support:5};
+  if(idx[name]!==undefined) navItems[idx[name]].classList.add('active');
+  
+  if(name==='withdraw') updateDashboard();
+  closeSidebar();
+}
+
+function toggleSidebar(){document.getElementById('appSidebar').classList.toggle('open');document.getElementById('sidebarOverlay').style.display='block';}
+function closeSidebar(){document.getElementById('appSidebar').classList.remove('open');document.getElementById('sidebarOverlay').style.display='none';}
+function toggleAdminSidebar(){document.getElementById('adminSidebar').classList.toggle('open');document.getElementById('adminOverlay').style.display='block';}
+function closeAdminSidebar(){document.getElementById('adminSidebar').classList.remove('open');document.getElementById('adminOverlay').style.display='none';}
+
+// ================================================================
+//  ADMIN PANEL
+// ================================================================
+function loadAdminPanel(){
+  renderAdminOverview();
+  renderAdminUsers();
+  renderAdminWithdrawals();
+  renderAdminAdsWatched();
+  renderAdminTasks();
+}
+
+function adminTab(name){
+  document.querySelectorAll('#page-admin .tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#page-admin .nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('atab-'+name).classList.add('active');
+  const titles={overview:'Admin Overview',users:'All Users',withdrawals:'Withdrawals','ads-watched':'Ads Watch Log',tasks:'Manage Tasks'};
+  document.getElementById('adminTabTitle').textContent=titles[name]||name;
+  const navItems=document.querySelectorAll('#page-admin .nav-item');
+  const idx={overview:0,users:1,withdrawals:2,'ads-watched':3,tasks:4};
+  if(idx[name]!==undefined) navItems[idx[name]].classList.add('active');
+  closeAdminSidebar();
+}
+
+function renderAdminOverview(){
+  const users=DB.getUsers().filter(u=>!u.isAdmin);
+  const wds=DB.getWithdrawals();
+  const log=DB.getWatchLog();
+  document.getElementById('adminTotalUsers').textContent=users.length;
+  document.getElementById('adminTotalAds').textContent=log.length;
+  document.getElementById('adminPendingW').textContent=wds.filter(w=>w.status==='pending').length;
+  document.getElementById('adminTotalPaid').textContent=fmt(wds.filter(w=>w.status==='approved').reduce((a,b)=>a+b.amount,0));
+}
+
+function renderAdminUsers(){
+  const q=(document.getElementById('userSearch')?.value||'').toLowerCase();
+  const users=DB.getUsers().filter(u=>!u.isAdmin).filter(u=>
+    !q||u.username.includes(q)||u.email.includes(q)||u.uid.toLowerCase().includes(q)
+  );
+  const tbody=document.getElementById('usersTbody');
+  tbody.innerHTML=users.map(u=>`<tr>
+    <td style="font-family:monospace;font-size:11px">${u.uid}</td>
+    <td><strong>${u.username}</strong></td>
+    <td>${u.email}</td>
+    <td style="color:var(--gold);font-weight:600">${fmt(u.balance||0)}</td>
+    <td>${u.totalAds||0}</td>
+    <td><span class="badge badge-${u.status==='active'?'approved':u.status==='banned'?'banned':'rejected'}">${u.status}</span></td>
+    <td>
+      <button onclick="adminViewUser('${u.id}')" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;margin-right:4px;">View</button>
+      ${u.status==='banned'
+        ? `<button onclick="adminUnban('${u.id}')" style="background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);color:var(--green);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;">Unban</button>`
+        : `<button onclick="adminBan('${u.id}')" style="background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);color:var(--red);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;">Ban</button>`
+      }
+      <button onclick="adminForfeit('${u.id}')" style="background:rgba(255,171,0,0.1);border:1px solid rgba(255,171,0,0.3);color:#FFAB00;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;margin-left:4px;">Forfeit</button>
+    </td>
+  </tr>`).join('');
+}
+
+function adminViewUser(id){
+  const u=DB.getUsers().find(x=>x.id===id);
+  if(!u) return;
+  alert(`USER DETAILS\n\nUID: ${u.uid}\nUsername: ${u.username}\nEmail: ${u.email}\nPhone: ${u.phone||'N/A'}\nBalance: ${fmt(u.balance||0)}\nTotal Ads Watched: ${u.totalAds||0}\nReferrals: ${(u.referrals||[]).length}\nRef Earnings: ${fmt(u.refEarnings||0)}\nTotal Earned: ${fmt(u.totalEarned||0)}\nJoined: ${new Date(u.joinDate).toLocaleString()}\nStatus: ${u.status}\nLast Ad: ${u.lastAdTime ? new Date(u.lastAdTime).toLocaleString() : 'Never'}`);
+}
+
+function adminBan(id){
+  if(!confirm('Ban this user? They will lose access.')) return;
+  const users=DB.getUsers();
+  const u=users.find(x=>x.id===id);
+  if(u){ u.status='banned'; DB.setUsers(users); renderAdminUsers(); toast('User banned','success'); }
+}
+
+function adminUnban(id){
+  const users=DB.getUsers();
+  const u=users.find(x=>x.id===id);
+  if(u){ u.status='active'; DB.setUsers(users); renderAdminUsers(); toast('User unbanned','success'); }
+}
+
+function adminForfeit(id){
+  if(!confirm('Forfeit this user\'s entire balance?')) return;
+  const users=DB.getUsers();
+  const u=users.find(x=>x.id===id);
+  if(u){ u.balance=0; u.transactions=u.transactions||[]; u.transactions.unshift({type:'forfeit',amount:0,desc:'Balance forfeited by admin',date:Date.now()}); DB.setUsers(users); renderAdminUsers(); toast('Balance forfeited','success'); }
+}
+
+function renderAdminWithdrawals(){
+  const wds=DB.getWithdrawals();
+  const tbody=document.getElementById('withdrawalsTbody');
+  tbody.innerHTML=wds.map(w=>`<tr>
+    <td style="font-family:monospace;font-size:11px">${w.id}</td>
+    <td>${w.username}</td>
+    <td style="color:var(--gold);font-weight:600">${fmt(w.amount)}</td>
+    <td>${w.method}</td>
+    <td style="font-size:11px;max-width:150px;overflow:hidden;text-overflow:ellipsis;">${JSON.stringify(w.details)}</td>
+    <td>${new Date(w.date).toLocaleDateString()}</td>
+    <td><span class="badge badge-${w.status}">${w.status}</span></td>
+    <td>
+      ${w.status==='pending'?`
+        <button onclick="approveWD('${w.id}')" style="background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);color:var(--green);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;margin-right:4px;">Approve</button>
+        <button onclick="rejectWD('${w.id}')" style="background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);color:var(--red);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;">Reject</button>
+      `:'-'}
+    </td>
+  </tr>`).join('')||'<tr><td colspan="8" style="text-align:center;color:var(--muted)">No withdrawal requests</td></tr>';
+}
+
+function approveWD(id){
+  const wds=DB.getWithdrawals();
+  const w=wds.find(x=>x.id===id);
+  if(!w)return;
+  w.status='approved';
+  DB.setWithdrawals(wds);
+  // Update user tx
+  const users=DB.getUsers();
+  const u=users.find(x=>x.id===w.userId);
+  if(u){
+    const tx=u.transactions?.find(t=>t.wdId===id);
+    if(tx) tx.status='approved';
+    DB.setUsers(users);
+  }
+  renderAdminWithdrawals();
+  renderAdminOverview();
+  toast('Withdrawal approved','success');
+}
+
+function rejectWD(id){
+  const wds=DB.getWithdrawals();
+  const w=wds.find(x=>x.id===id);
+  if(!w)return;
+  w.status='rejected';
+  DB.setWithdrawals(wds);
+  // Refund balance
+  const users=DB.getUsers();
+  const u=users.find(x=>x.id===w.userId);
+  if(u){
+    u.balance=(Number(u.balance)||0)+Number(w.amount);
+    u.transactions=u.transactions||[];
+    u.transactions.unshift({type:'refund',amount:w.amount,desc:'Withdrawal rejected - refunded',date:Date.now()});
+    DB.setUsers(users);
+  }
+  renderAdminWithdrawals();
+  renderAdminOverview();
+  toast('Withdrawal rejected & balance refunded','warning');
+}
+
+function renderAdminAdsWatched(){
+  const log=DB.getWatchLog().slice(0,100);
+  const tbody=document.getElementById('adsWatchedTbody');
+  tbody.innerHTML=log.map(l=>`<tr>
+    <td>${l.username}</td>
+    <td>${l.adId}</td>
+    <td style="color:var(--green)">+${fmt(l.earned)}</td>
+    <td>${new Date(l.date).toLocaleString()}</td>
+  </tr>`).join('')||'<tr><td colspan="4" style="text-align:center;color:var(--muted)">No ads watched yet</td></tr>';
+}
+
+function renderAdminTasks(){
+  const tasks=DB.getTasks();
+  const el=document.getElementById('tasksList');
+  el.innerHTML=tasks.map(t=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg3);border-radius:8px;margin-bottom:8px;border:1px solid var(--border);">
+    <div>
+      <span style="margin-right:8px">${t.emoji}</span>
+      <strong style="font-size:13px">${t.title}</strong>
+      <span style="font-size:11px;color:var(--muted);margin-left:8px">${t.duration}s · ${fmt(t.reward)}</span>
+    </div>
+    <button onclick="deleteTask('${t.id}')" style="background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);color:var(--red);padding:3px 10px;border-radius:6px;cursor:pointer;font-size:12px;">Delete</button>
+  </div>`).join('')||'<p style="color:var(--muted);font-size:13px">No tasks.</p>';
+}
+
+function addTask(){
+  const title=document.getElementById('taskTitle').value.trim();
+  const desc=document.getElementById('taskDesc').value.trim();
+  const duration=parseInt(document.getElementById('taskDuration').value)||30;
+  const reward=parseFloat(document.getElementById('taskReward').value)||0.10;
+  const emoji=document.getElementById('taskEmoji').value.trim()||'📺';
+  
+  if(!title){toast('Please enter a task title','error');return;}
+  
+  const tasks=DB.getTasks();
+  tasks.push({id:'t'+Date.now(),title,desc,duration,reward,emoji,category:'Custom'});
+  DB.setTasks(tasks);
+  renderAdminTasks();
+  toast('Task added!','success');
+  document.getElementById('taskTitle').value='';
+  document.getElementById('taskDesc').value='';
+}
+
+function deleteTask(id){
+  if(!confirm('Delete this task?')) return;
+  const tasks=DB.getTasks().filter(t=>t.id!==id);
+  DB.setTasks(tasks);
+  renderAdminTasks();
+  toast('Task deleted','success');
+}
+
+// ================================================================
+//  INIT
+// ================================================================
+(function init(){
+  initAdmin();
+  
+  // Check for referral code in URL
+  const params=new URLSearchParams(window.location.search);
+  const ref=params.get('ref');
+  if(ref && document.getElementById('regRef')) document.getElementById('regRef').value=ref;
+  
+  // Auto-login if session exists
+  const cu=DB.getCurrentUser();
+  if(cu){
+    const fresh=DB.getUsers().find(u=>u.id===cu.id);
+    if(fresh && fresh.status!=='banned'){
+      if(fresh.isAdmin){ showPage('page-admin'); loadAdminPanel(); }
+      else { checkBalanceReset(fresh); DB.setCurrentUser(fresh); showPage('page-app'); loadUserApp(); }
+    } else { DB.clearCurrentUser(); }
+  }
+  
+  // Handle withdrawal method default
+  selectMethod('bank');
+})();
+</script>
+</body>
+</html>
